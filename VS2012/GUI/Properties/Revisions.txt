@@ -1,0 +1,41 @@
+1.0.0.43 (05/11/12):
+Add the possibility to delete a node with a right click of the mouse.
+
+1.0.0.42 (05/11/12):
+Show also the date of the oldest file.
+
+1.0.0.41 (22/03/12):
+Align language/extensions according to RSM and UCC rules.
+
+1.0.0.40 (22/03/12):
+Add drag and drop capability to count a directory.
+
+1.0.0.39 (12/10/11):
+Fix bug when showing oldest file of empty directory.
+
+1.0.0.38 (12/08/11):
+Update the ToolTrip content.
+
+1.0.0.37 (11/08/11):
+Add Delphi language.
+
+1.0.0.36 (10/08/11):
+Rule out CVS directories even if not Hidden.
+
+1.0.0.35 (10/08/11):
+Bug fix.
+
+1.0.0.34 (10/08/11):
+Show the most recent file in the directory.
+
+1.0.0.33 (22/07/11):
+Do not count CVS directories in the sandbox.
+
+1.0.0.31 (14/06/11):
+CSS is counted as HTML.
+
+1.0.0.30 (07/06/11):
+Update categories to reflect new uniform definition for KLOC
+
+1.0.0.29 (14/03/11):
+Add this about information dialog.

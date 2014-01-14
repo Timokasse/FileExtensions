@@ -91,7 +91,7 @@ namespace GUI {
             fc.Categories.Add(new Language("Visual_Basic", new List<string> { "vb", "frm", "mod", "cls", "bas" }, Color.FromArgb(255, 255, 255)));
             fc.Categories.Add(new Language("XML", new List<string> { "xml" }, Color.FromArgb(255, 255, 255)));
             tscbCategories.Items.Add(fc);
-            
+
             // Make a list of languages for TPF with details
             fc = new FileCategories("TPF Detail");
             fc.Categories.Add(new Language("ASM", new List<string> { "asm", "cpy" }, Color.FromArgb(255, 255, 255)));
@@ -144,6 +144,54 @@ namespace GUI {
 
         }
 
+        private void ShowCount(DirectoryData root, int nbShown) {
+            FileCategories fc = (FileCategories)tscbCategories.SelectedItem;
+            Dictionary<string, int> count = root.TotalCount(fc);
+            var sortedDict = from entry in count orderby entry.Value descending select entry;
+
+            dotnetCHARTING.WinForms.SeriesCollection sc = new dotnetCHARTING.WinForms.SeriesCollection();
+            int nb = 0;
+            dotnetCHARTING.WinForms.Series sOther = new dotnetCHARTING.WinForms.Series("Other");
+            dotnetCHARTING.WinForms.Element elOther = new dotnetCHARTING.WinForms.Element();
+            elOther.Color = Color.White;
+            elOther.YValue = 0;
+            sOther.Elements.Add(elOther);
+            foreach (KeyValuePair<string, int> ext in sortedDict) {
+                if (nb < nbShown) {
+                    dotnetCHARTING.WinForms.Series s = new dotnetCHARTING.WinForms.Series(ext.Key);
+                    dotnetCHARTING.WinForms.Element el = new dotnetCHARTING.WinForms.Element();
+                    el.Color = Color.White;
+#if DEBUG
+                    Console.WriteLine("{0}: {1}", s.Name, el.Color);
+#endif
+                    el.YValue = ext.Value;
+                    s.Elements.Add(el);
+                    sc.Add(s);
+                } else {
+                    elOther.YValue += ext.Value;
+                }
+
+                //dotnetCHARTING.WinForms.SmartPalette sp = s.GetSmartPalette(dotnetCHARTING.WinForms.Palette.One);
+                //sp.SaveState("PaletteOne.xml");
+                nb++;
+            }
+
+            // Check if there are some aggregated values
+            if (elOther.YValue > 0) {
+                sc.Add(sOther);
+            }
+
+            //sc.Sort(dotnetCHARTING.WinForms.ElementValue.YValue, "Desc");
+            chart1.SeriesCollection.Clear();
+            chart1.SeriesCollection.Add(sc);
+            dotnetCHARTING.WinForms.SmartPalette sp = new dotnetCHARTING.WinForms.SmartPalette();
+            //dotnetCHARTING.WinForms.Palette.Autumn;
+            Color c = new Color();
+            c = Color.FromArgb(156, 154, 255);
+
+        }
+
+
         private void ShowSize(DirectoryData root) {
             FileCategories fc = (FileCategories)tscbCategories.SelectedItem;
             Dictionary<string, long> size = root.TotalSize(fc);
@@ -164,7 +212,7 @@ namespace GUI {
             if (tvDirectories.SelectedNode != null) {
                 DirectoryData dd = (DirectoryData)tvDirectories.SelectedNode.Tag;
                 if (_showCount) {
-                    ShowCount(dd);
+                    ShowCount(dd, 30);
                 } else {
                     ShowSize(dd);
                 }
@@ -174,7 +222,7 @@ namespace GUI {
                 } else {
                     string lastFile = dd.LastFile.Substring(dd.LastFile.IndexOf(dd.Name) + dd.Name.Length);
                     string firstFile = dd.LastFile.Substring(dd.FirstFile.IndexOf(dd.Name) + dd.Name.Length);
-                    tslDate.Text = String.Format("Directory date: [{0} ({1}) - {2} ({3})]",dd.FirstDate, firstFile, dd.LastDate, lastFile);
+                    tslDate.Text = String.Format("Directory date: [{0} ({1}) - {2} ({3})]", dd.FirstDate, firstFile, dd.LastDate, lastFile);
                 }
             }
 
